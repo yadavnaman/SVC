@@ -1,8 +1,10 @@
 import os
 import numpy as np
+import time
 from collections import Counter
 from sklearn import svm
 from sklearn.metrics import accuracy_score
+
 
 def make_Dictionary(root_dir):
     all_words = []
@@ -57,11 +59,18 @@ dictionary = make_Dictionary(TRAIN_DIR)
 print("reading and processing emails from file")
 features_matrix, labels = extract_features(TRAIN_DIR)
 test_feature_matrix, test_labels = extract_features(TEST_DIR)
+
+x1= int(len(features_matrix)/10)
+features_matrix = features_matrix[:x1,:]
+labels = labels[:x1]
 #default values of tuning parameters (kernel = linear, C = 1 and gamma =1)
-model = svm.SVC()
+model = svm.SVC(kernel = "rbf", C = 100, gamma= 0.001)
 
 print("TRAINING MODEL")
+start = time.time()
 model.fit(features_matrix, labels)
+stop = time.time()
+print(f"Training time: {stop-start} seconds")
 predicted_labels = model.predict(test_feature_matrix)
 
 print("Accuracy score :", end=" ")
